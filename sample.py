@@ -5,17 +5,18 @@ from pandas import ExcelFile
  
 df = pd.read_excel('test.xlsx', sheetname='Sheet1')
  
-region = df['region']
+#region = df['region']
 #print(region)
-host = df['host']
+#host = df['host']
 #print(host)
-for host in host:
+for i in df.index:
 	
 	json_body = [
     {
         "measurement": "cpu_load_server",
         "tags": {
-            "host": host
+            "host": df['host'][i],
+	    "region": df['region'][i]
         },
         "fields": {
             "value": 0.64
@@ -24,9 +25,9 @@ for host in host:
 	]
 
 
-	client = InfluxDBClient('localhost', 8086, 'root', 'root', 'pythonInserted')
+	client = InfluxDBClient('localhost', 8086, 'root', 'root', 'pythonData')
 
-	client.create_database('pythonInserted')
+	client.create_database('pythonData')
 
 	client.write_points(json_body)
 
